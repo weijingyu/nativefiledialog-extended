@@ -61,19 +61,19 @@ add_library(${TARGET_NAME} ${SOURCE_FILES})
 
 # Allow includes from include/
 target_include_directories(${TARGET_NAME}
-  PUBLIC include/)
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
 if(nfd_PLATFORM STREQUAL PLATFORM_LINUX)
   if(NOT NFD_PORTAL)
     target_include_directories(${TARGET_NAME}
       PRIVATE ${GTK3_INCLUDE_DIRS})
     target_link_libraries(${TARGET_NAME}
-      PRIVATE ${GTK3_LIBRARIES})
+      PRIVATE ${GTK3_LINK_LIBRARIES})
   else()
     target_include_directories(${TARGET_NAME}
       PRIVATE ${DBUS_INCLUDE_DIRS})
     target_link_libraries(${TARGET_NAME}
-      PRIVATE ${DBUS_LIBRARIES})
+      PRIVATE ${DBUS_LINK_LIBRARIES})
     target_compile_definitions(${TARGET_NAME}
       PUBLIC NFD_PORTAL)
   endif()
@@ -114,6 +114,8 @@ set_target_properties(${TARGET_NAME} PROPERTIES
                                        VERSION ${PROJECT_VERSION}
                                        SOVERSION ${PROJECT_VERSION_MAJOR})
 
-include(GNUInstallDirs)
+if (NFD_INSTALL)
+  include(GNUInstallDirs)
 
-install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION ${LIB_INSTALL_DIR} ARCHIVE DESTINATION ${LIB_INSTALL_DIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION ${LIB_INSTALL_DIR} ARCHIVE DESTINATION ${LIB_INSTALL_DIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
